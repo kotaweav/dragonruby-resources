@@ -2,6 +2,8 @@
 
 For the individuals who cannot run DragonRuby natively on their machines due to weird setups (in my case network setup), we can get it running in Docker!
 
+*WARNING* Please read through the `Dockerfile` and `run_docker` files before trying this. There are some things I do there which could be potentially security risks, so you should be aware of what those are /before/ you try it out.
+
 * Dependencies
 This assumes a few things:
 
