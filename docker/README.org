@@ -1,0 +1,28 @@
+#+TITLE: docker setup for DragonRuby
+
+For the individuals who cannot run DragonRuby natively on their machines due to weird setups (in my case network setup), we can get it running in Docker!
+
+* Dependencies
+This assumes a few things:
+
+- nvidia gpu
+- proprietary nvidia graphics drivers
+- docker is installed on the system
+- [nvidia-docker](https://github.com/NVIDIA/nvidia-docker)
+- pulseaudio
+
+* Building
+You only presumably need to build once. Call the build script as such:
+
+#+begin_src shell-script
+./build_docker
+#+end_src
+
+* Running
+Copy the `run_docker` file to the root of your DragonRuby installation. From there, call `./run_docker`. Then, it will start up a docker where the current drgtk installation is mounted to the `/mnt` directory. From within there, you can call `./dragonruby`.
+
+* Limitations
+- cannot access the internet
+- currently only works with nvidia graphics cards with the nvidia proprietary drivers installed
+- currently only works with pulseaudio
+- can probably be simplified to not use the whole `nvidia/cuda` base image

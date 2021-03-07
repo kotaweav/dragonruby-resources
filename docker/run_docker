@@ -1,0 +1,14 @@
+#! /usr/bin/env bash
+
+docker run --rm --runtime=nvidia --privileged\
+       -v /dev:/dev -e DISPLAY -e DOCKER=1\
+       -v "/tmp/.X11-unix:/tmp/.X11-unix:rw"\
+       -v "/etc/passwd:/etc/passwd:ro" -v "/etc/group:/etc/group:ro"\
+       -v $HOME/.Xauthority:$HOME/.Xauthority\
+       -v $HOME/.config/pulse:$HOME/.config/pulse\
+       -v /dev/snd:/dev/snd\
+       -v /run/user/$UID/pulse:/run/user/$UID/pulse\
+       -v /var/lib/dbus:/var/lib/dbus\
+       --cap-add=SYS_PTRACE --security-opt seccomp=unconfined\
+       -u $(id -u):$(id -g) -v $(pwd):/mnt --workdir=/mnt\
+       -it dragonruby-runner /bin/bash

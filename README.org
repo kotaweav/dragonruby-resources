@@ -1,0 +1,5 @@
+#+TITLE: dragonruby resources
+
+* Overview
+
+I will try to collect my own notes, tips, and other fun things dragonruby related. This is also where all resources and code from the [dev vlog and tutorials](https://www.youtube.com/channel/UCzFlGBRh9YNy1QMEYWafblQ) will go.
