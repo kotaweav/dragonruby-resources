@@ -1,0 +1,134 @@
+#+TITLE: simplemath
+Library for simple math utilities
+
+This file also serves as a tutorial for how to do various math things in ruby
+
+#+begin_src ruby
+
+  class Vec2
+    def initialize x, y
+      @x = x
+      @y = y
+    end
+    attr_accessor :x, :y
+    def + v
+      if v.is_a? Vec2
+        return Vec2.new @x + v.x, @y + v.y
+      end
+      return Vec2.new @x + v, @y + v
+    end
+
+    def - v
+      if v.is_a? Vec2
+        return Vec2.new @x - v.x, @y - v.y
+      end
+      return Vec2.new @x - v, @y - v
+    end
+
+    def * v
+      if v.is_a? Vec2
+        return Vec2.new @x * v.x, @y * v.y
+      end
+      return Vec2.new @x * v, @y * v
+    end
+  end
+
+#+end_src
+
+#+begin_src ruby
+def display_lines args
+  p = Vec2.new(400, 400)
+  r = Vec2.new(200, 150)
+  t = 0.1
+
+  q = Vec2.new(600, 300)
+  s = Vec2.new(-300, 200)
+  u = 0.6
+
+  intersection = compute_intersect p, r, q, s
+  args.outputs.labels << { x: 100, y: 100, text: "intersection: #{intersection}" }
+  args.outputs.solids << { x: intersection.x - 3, y: intersection.y - 3,
+                           w: 6, h: 6, r: 255 }
+
+  args.outputs.lines << [
+    { x: p.x, y: p.y, x2: (p + r).x, y2: (p + r).y },
+    { x: p.x, y: p.y, x2: (p + r * t).x, y2: (p + r * t).y, b: 255 }
+  ]
+
+  args.outputs.labels << [
+    { x: p.x, y: p.y, text: "p" },
+    { x: (p + r).x, y: (p + r).y, text: "p + r"},
+    { x: (p + r * t).x, y: (p + r * t).y, text: "p + tr" }
+  ]
+
+  args.outputs.solids << [
+    { x: p.x - 3, y: p.y - 3, w: 6, h: 6 },
+    { x: (p + r).x - 3, y: (p + r).y - 3, w: 6, h: 6 },
+
+    { x: (p + r * t).x - 3, y: (p + r * t).y - 3, w: 6, h: 6, b: 255 },
+  ]
+
+  args.outputs.lines << [
+    { x: q.x, y: q.y, x2: (q + s).x, y2: (q + s).y },
+    { x: q.x, y: q.y, x2: (q + s * u).x, y2: (q + s * u).y, g: 155 }
+  ]
+
+  args.outputs.labels << [
+    { x: q.x, y: q.y, text: "q" },
+    { x: (q + s).x, y: (q + s).y, text: "q + r"},
+    { x: (q + s * t).x, y: (q + s * t).y, text: "q + tr" }
+  ]
+end
+#+end_src
+
+* Collisions between vectors
+
+[[https://youtu.be/1wdy2JDcfLU?t=2928][video segment here]]
+
+the key point with the above is scaling q and p by s and t respectively.
+
+with the eq $p + tr$, $t$ is a /scalar/ and when 0, $p + tr = p$. When $t$ is equal to 1, $p + tr = p + r$. if $r \times s = 0$, because the cross product is defined as $r \times s = \norm{r}\norm{s}\sin(\theta)$ where $\theta$ is the angle between the vectors, if $\sin(\theta) == 0$ then it means the vectors are parallel. The same thing applies to $q + us$.
+
+#+begin_src ruby
+def compute_intersect p, r, q, s
+  # taken from: https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect/565282#565282
+  t = (q - p).cross(s) / r.cross(s)
+  u = (q - p).cross(r) / r.cross(s)
+
+  # we will consider collinear as non-collision for the sake of our system
+  if r.cross(s) != 0 and t > 0 && t < 1 && u > 0 && u < 1
+    return p + r * t
+  else
+    return nil
+  end
+end
+#+end_src
+
+#+begin_src ruby
+
+def test_check_collision args
+  poly = Polygon.new
+  poly.add_point Vec2.new 300, 300
+  poly.add_point Vec2.new 500, 300
+  poly.add_point Vec2.new 400, 600
+
+  poly.display args
+
+  collisions = poly.check_collision Vec2.new(200, 400), Vec2.new(300, 100)
+
+  args.outputs.solids <<
+    [{
+       x: 197, y: 397, w: 6, h: 6
+     },
+     {
+       x: 200 + 300 - 3, y: 400 + 100 - 3, w: 6, h: 6
+     }]
+
+  args.outputs.lines << { x: 200, y: 400, x2: 200 + 300, y2: 400 + 100 }
+
+  collisions.each do |pt|
+    args.outputs.solids <<
+    { x: pt.x - 3, y: pt.y - 3, w: 6, h: 6, r: 255 }
+  end
+end
+#+end_src
