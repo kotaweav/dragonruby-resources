@@ -2,15 +2,15 @@
 
 build the project using clang++ as the default c++ compiler and using:
 
-```shell-script
+#+begin_src: shell-script
 mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/path/to/drgtk-pro/project/
-```
+#+end_src
 
 Then, in the drgtk-pro project have the `pre.sh` as follows:
 
-```
+#+begin_src: shell-script
 #!/bin/sh
 
 OSTYPE=`uname -s`
@@ -29,6 +29,6 @@ $DRB_ROOT/dragonruby-bind --output=native/ext-bindings.c include/myext.h
 clang \
   -isystem $DRB_ROOT/include -I. \
   -fPIC -shared native/ext-bindings.c -o native/$PLATFORM/ext.$DLLEXT lib/libmyext.a
-```
+#+end_src
 
 a sample of the dragonruby project is in the `/samples/cpp_integration/sample_cpp_integration/` directory.
