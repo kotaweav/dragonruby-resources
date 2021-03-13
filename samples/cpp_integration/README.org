@@ -1,0 +1,34 @@
+#+TITLE: Building a C++ Project for DragonRuby
+
+build the project using clang++ as the default c++ compiler and using:
+
+```shell-script
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/path/to/drgtk-pro/project/
+```
+
+Then, in the drgtk-pro project have the `pre.sh` as follows:
+
+```
+#!/bin/sh
+
+OSTYPE=`uname -s`
+if [ "x$OSTYPE" = "xDarwin" ]; then
+  PLATFORM=macos
+  DLLEXT=dylib
+else
+  PLATFORM=linux-amd64
+  DLLEXT=so
+fi
+
+DRB_ROOT=../
+mkdir -p native/$PLATFORM
+
+$DRB_ROOT/dragonruby-bind --output=native/ext-bindings.c include/myext.h
+clang \
+  -isystem $DRB_ROOT/include -I. \
+  -fPIC -shared native/ext-bindings.c -o native/$PLATFORM/ext.$DLLEXT lib/libmyext.a
+```
+
+a sample of the dragonruby project is in the `/samples/cpp_integration/sample_cpp_integration/` directory.
