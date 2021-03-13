@@ -8,6 +8,13 @@ cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/path/to/drgtk-pro/project/
 #+end_src
 
+You can compile and make using
+
+#+begin_src: shell-script
+make
+make install
+#+end_src
+
 Then, in the drgtk-pro project have the `pre.sh` as follows:
 
 #+begin_src: shell-script
@@ -32,3 +39,5 @@ clang \
 #+end_src
 
 a sample of the dragonruby project is in the `/samples/cpp_integration/sample_cpp_integration/` directory.
+
+make sure that is copied into a directory with `dragonruby` pro edition, and run `./pre.sh` after compiling the c++ but before running the drgtk program.
