@@ -1,7 +1,29 @@
+begin
+  $gtk.ffi_misc.gtk_dlopen("k3d")
+  include FFI::K3d
+  $cext = true
+  puts "Using CExt version of K3d"
+rescue
+  $cext = false
+  puts "Using pure Ruby version of K3d"
+end
+
 class Obj3
   def initialize
     @points = []
     @lines = []
+  end
+
+  def serialize
+    { points: @points, lines: @lines }
+  end
+
+  def inspect
+    serialize.to_s
+  end
+
+  def to_s
+    serialize.to_s
   end
 
   attr_accessor :points, :lines
@@ -126,6 +148,18 @@ class Vec3
 
   attr_accessor :arr
 
+  def serialize
+    { arr: @arr }
+  end
+
+  def inspect
+    serialize.to_s
+  end
+
+  def to_s
+    serialize.to_s
+  end
+
   def x
     @arr[0]
   end
@@ -172,10 +206,6 @@ class Vec3
     return Math::sqrt(x * x + y * y + z * z)
   end
 
-  def to_s
-    return "(#{x.round(2)}, #{y.round(2)}, #{z.round(2)})"
-  end
-
   def to_a
     return @arr
   end
@@ -191,11 +221,47 @@ end
 
 ### matrix methods
 
+def create_cext_mat mat
+  num_items = mat.size * mat[0].size
+  cmat = c_create_mat mat.size, mat[0].size
+  mat.flatten.each_with_index do |v, idx|
+    cmat[idx] = v.to_f
+  end
+  cmat
+end
+
+def cext_mat_to_rb cmat, width, height
+  height.times.collect do |i|
+    width.times.collect do |j|
+      cmat[i * width + j]
+    end
+  end
+end
+
 def matmul mat1, mat2
-  mat1.collect do |row1|
-    mat2.transpose.collect do |col1|
-      col1.zip(row1).inject(0) do |sum, pair|
-        sum + pair[0] * pair[1]
+  if $cext
+    if mat1.class == FFI::K3d::FloatPointer
+      cmat1 = mat1
+    else
+      cmat1 = create_cext_mat mat1
+    end
+    if mat2.class == FFI::K3d::FloatPointer
+      cmat2 = mat2
+    else
+      cmat2 = create_cext_mat mat2
+    end
+    result = c_matmul(cmat1, mat1[0].size, mat1.size, cmat2, mat2[0].size, mat2.size)
+    c_free_mat(cmat1)
+    c_free_mat(cmat2)
+    rb_result = cext_mat_to_rb(result, mat2[0].size, mat1.size)
+    c_free_mat(result)
+    return rb_result
+  else
+    return mat1.collect do |row1|
+      mat2.transpose.collect do |col1|
+        col1.zip(row1).inject(0) do |sum, pair|
+          sum + pair[0] * pair[1]
+        end
       end
     end
   end
