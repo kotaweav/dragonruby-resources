@@ -30,7 +30,7 @@ To have a splat oprator we need to overload the `to_a` operator:
 #+RESULTS:
 | 2 | 3 | 4 |
 
-** Matmul
+** Matrix Multiplication
 Matrix multiplication is pretty trivial in Ruby.
 
 #+begin_src ruby :session
