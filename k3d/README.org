@@ -1,0 +1,34 @@
+#+TITLE: k3d - dragonruby 3d engine
+
+You really shouldn't use this. drgtk is not designed for 3d and this is a super low performance library.
+
+Consider this an educational tool.
+
+* Samples
+** Basic 3d rendering
+#+begin_src ruby
+  require 'lib/k3d.rb'
+
+  def tick args
+    args.state.drone ||= read_stl 'drone.stl'
+    args.state.rot_axis ||= Vec3.new(1, 1, 1) / Vec3.new(1, 1, 1).mag
+    args.state.rot_angle ||= 0
+    args.state.rot_angle += 0.05
+    display args
+  end
+
+  def display args
+    3.times do |n|
+      r = axis_angle_mat(args.state.rot_axis, args.state.rot_angle + n)
+      rotated = args.state.drone.rotate(r)
+      translated = rotated.translate [n - 1, 0, 2]
+      projected_pts = camera_projection args, translated, 500
+      projected_pts.display args
+    end
+  end
+
+#+end_src
+
+
+#+DOWNLOADED: screenshot @ 2021-03-14 03:46:09
+[[file:Samples/2021-03-14_03-46-09_screenshot.png]]
