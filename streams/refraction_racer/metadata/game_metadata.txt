@@ -1,0 +1,6 @@
+devid=kota
+devtitle=kota
+gameid=refraction_racer
+gametitle=Refraction Racer
+version=0.1
+icon=metadata/icon.png
