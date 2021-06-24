@@ -139,3 +139,47 @@ We draw images pretty simply by using pythagorean thm:
 
 #+DOWNLOADED: https://media.discordapp.net/attachments/674410581326823446/815862136562909224/unknown.png?width=960&height=593 @ 2021-03-14 00:18:59
 [[file:Little_ruby_/_drgtk_things/2021-03-14_00-18-59_unknown.png.png]]
+
+** Drawing a triangle using drgtk render targets
+drawing triangles is pretty trivial:
+
+#+begin_src ruby
+def tick args
+  if args.state.tick_count.zero?
+    setup args
+  end
+
+  args.outputs.sprites << {
+    x: 400, y: 200, w: args.state.triangle.w, h: args.state.triangle.h,
+    r: 255, g: 0, b: 0,
+    path: :triangle
+  }
+end
+
+def setup args
+  args.state.triangle.w = 400
+  args.state.triangle.h = 100
+  triangle_rt args, :triangle, args.state.triangle.w, args.state.triangle.h
+end
+
+def triangle_rt args, label, w, h
+  slope = h / (w / 2)
+  args.outputs[label].w = w
+  args.outputs[label].h = h
+  args.outputs[label].lines <<
+    (args.state.triangle.w.times.map do |x|
+       {
+         x: x, y: 0, x2: x,
+         y2: [
+           slope * x,
+           -slope * x + h * 2
+         ].min,
+         r: 255, g: 255, b: 255
+       }
+     end)
+end
+#+end_src
+
+
+#+DOWNLOADED: screenshot @ 2021-06-23 23:02:26
+[[file:Little_ruby_/_drgtk_things/2021-06-23_23-02-26_screenshot.png]]
