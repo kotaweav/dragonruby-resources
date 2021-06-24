@@ -140,8 +140,8 @@ We draw images pretty simply by using pythagorean thm:
 #+DOWNLOADED: https://media.discordapp.net/attachments/674410581326823446/815862136562909224/unknown.png?width=960&height=593 @ 2021-03-14 00:18:59
 [[file:Little_ruby_/_drgtk_things/2021-03-14_00-18-59_unknown.png.png]]
 
-** Drawing a triangle using drgtk render targets
-drawing triangles is pretty trivial:
+** Drawing an isosceles triangle using drgtk render targets
+drawing isosceles (two sides are the same length) triangles is pretty trivial:
 
 #+begin_src ruby
 def tick args
