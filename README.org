@@ -183,3 +183,5 @@ end
 
 #+DOWNLOADED: screenshot @ 2021-06-23 23:02:26
 [[file:Little_ruby_/_drgtk_things/2021-06-23_23-02-26_screenshot.png]]
+
+@@html:<iframe width="560" height="315" src="https://www.youtube.com/embed/n4t71AD_AO8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>@@
